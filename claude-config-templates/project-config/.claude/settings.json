@@ -1,0 +1,128 @@
+{
+  // ╔══════════════════════════════════════════════════════════════════════════╗
+  // ║  PROJECT SETTINGS - .claude/settings.json                                ║
+  // ║  ────────────────────────────────────────────────────────────────────────║
+  // ║  Team-shared settings. CHECK THIS INTO GIT.                              ║
+  // ║  These settings apply to everyone working on this project.               ║
+  // ║                                                                          ║
+  // ║  PRIORITY: Project settings override global (~/.claude/settings.json)    ║
+  // ║  BUT: .claude/settings.local.json overrides these (for personal tweaks)  ║
+  // ╚══════════════════════════════════════════════════════════════════════════╝
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PERMISSIONS - Project-wide tool access rules
+  // ═══════════════════════════════════════════════════════════════════════════
+  "permissions": {
+    // Tools everyone on the team can use freely
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "WebFetch"
+    ],
+
+    // Bash commands everyone can run without approval
+    // These are PROJECT-SPECIFIC commands
+    "allowBash": [
+      // Git operations (read-only)
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+
+      // Project scripts (defined in package.json)
+      "Bash(pnpm dev)",
+      "Bash(pnpm build)",
+      "Bash(pnpm test*)",
+      "Bash(pnpm lint*)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm verify)",
+
+      // Prisma commands
+      "Bash(pnpm prisma generate)",
+      "Bash(pnpm prisma migrate dev*)",
+      "Bash(pnpm prisma studio)",
+
+      // Safe read operations
+      "Bash(ls *)",
+      "Bash(cat package.json)",
+      "Bash(cat tsconfig.json)"
+    ],
+
+    // Commands that should NEVER run in this project
+    "deny": [
+      "Bash(pnpm prisma migrate reset*)",  // Don't reset DB accidentally!
+      "Bash(rm -rf node_modules)",          // Slow to recover
+      "Bash(*--force*)",                    // No force operations
+      "Bash(DROP TABLE*)",                  // No destructive SQL
+      "Bash(DELETE FROM*)"                  // No destructive SQL
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ENVIRONMENT - Project-specific variables
+  // ═══════════════════════════════════════════════════════════════════════════
+  "env": {
+    // Available in hooks as $VARIABLE_NAME
+    "NODE_ENV": "development",
+    "LOG_LEVEL": "debug"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HOOKS - Project-wide automation
+  // ═══════════════════════════════════════════════════════════════════════════
+  //
+  // Hooks run shell commands at specific points in Claude's workflow.
+  // These are SHARED with the team, so they enforce project standards.
+  //
+  "hooks": {
+    // ─────────────────────────────────────────────────────────────────────────
+    // PreToolUse: Runs BEFORE Claude uses a tool (can block with exit 2)
+    // ─────────────────────────────────────────────────────────────────────────
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",  // Matches Write and Edit tools
+        "hooks": [
+          {
+            "type": "command",
+            // This hook runs before any file is written/edited
+            // Exit code 2 = block the operation, stderr shown to Claude
+            "command": ".claude/hooks/validate-file-change.sh"
+          }
+        ]
+      }
+    ],
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PostToolUse: Runs AFTER Claude uses a tool (feedback only, can't block)
+    // ─────────────────────────────────────────────────────────────────────────
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            // Format files after Claude modifies them
+            "command": ".claude/hooks/format-on-save.sh"
+          }
+        ]
+      }
+    ],
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Stop: Runs when Claude finishes responding
+    // ─────────────────────────────────────────────────────────────────────────
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            // Run quick verification after Claude finishes
+            "command": ".claude/hooks/post-response-check.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  GITIGNORE FOR CLAUDE CODE FILES                                            ║
+# ║  ────────────────────────────────────────────────────────────────────────────║
+# ║  This shows which Claude Code files should be ignored (personal)            ║
+# ║  vs committed (team-shared).                                                ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLAUDE CODE - Personal files (DO NOT COMMIT)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Local settings (your personal overrides for this project)
+.claude/settings.local.json
+
+# Local memory (your personal notes for this project)
+.claude/CLAUDE.local.md
+CLAUDE.local.md
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLAUDE CODE - Team files (DO COMMIT)
+# ═══════════════════════════════════════════════════════════════════════════════
+# These are NOT in .gitignore - they should be committed:
+#
+# .claude/settings.json      ← Team permissions and hooks
+# .claude/CLAUDE.md          ← Project documentation
+# .claude/rules/*.md         ← Coding standards
+# .claude/skills/*.md        ← Project-specific skills
+# .claude/agents/*.md        ← Project-specific agents
+# .claude/hooks/*.sh         ← Hook scripts
+# CLAUDE.md                  ← Project documentation (alternative location)
+# .mcp.json                  ← Team MCP server config
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# STANDARD PROJECT IGNORES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.output/
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Caches
+.cache/
+.parcel-cache/
+.turbo/

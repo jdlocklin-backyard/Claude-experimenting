@@ -1,0 +1,82 @@
+{
+  // ╔══════════════════════════════════════════════════════════════════════════╗
+  // ║  GLOBAL SETTINGS - ~/.claude/settings.json                               ║
+  // ║  ────────────────────────────────────────────────────────────────────────║
+  // ║  These settings apply to ALL projects unless overridden by:              ║
+  // ║  • .claude/settings.json (project)                                       ║
+  // ║  • .claude/settings.local.json (personal project overrides)              ║
+  // ║                                                                          ║
+  // ║  NOTE: JSON doesn't support comments, but Claude Code does!              ║
+  // ║  Remove comments if using with strict JSON parsers.                      ║
+  // ╚══════════════════════════════════════════════════════════════════════════╝
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PERMISSIONS - What Claude is allowed to do without asking
+  // ═══════════════════════════════════════════════════════════════════════════
+  "permissions": {
+    // Tools Claude can use freely (no confirmation needed)
+    "allow": [
+      "Read",           // Read any file
+      "Glob",           // Search for files by pattern
+      "Grep",           // Search file contents
+      "WebFetch",       // Fetch web content
+      "WebSearch"       // Search the web
+    ],
+
+    // Commands Claude can run without asking
+    // Format: "Bash(command:pattern)" - use regex patterns
+    "allowBash": [
+      "Bash(git status)",           // Check git status
+      "Bash(git diff*)",            // View diffs
+      "Bash(git log*)",             // View history
+      "Bash(pnpm test*)",           // Run tests
+      "Bash(pnpm typecheck)",       // Type checking
+      "Bash(pnpm lint*)",           // Linting
+      "Bash(ls *)",                 // List files
+      "Bash(cat package.json)"      // View package.json
+    ],
+
+    // Tools/commands that are NEVER allowed (even if user says yes)
+    "deny": [
+      "Bash(rm -rf /)",             // Never delete root!
+      "Bash(sudo *)",               // No sudo commands
+      "Bash(*--force*)"             // No force flags
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ENVIRONMENT - Variables available to hooks and commands
+  // ═══════════════════════════════════════════════════════════════════════════
+  "env": {
+    // These are available in hooks via $VARIABLE_NAME
+    "EDITOR": "code",
+    "CLAUDE_LOG_LEVEL": "info"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HOOKS - Commands that run at specific lifecycle points
+  // ═══════════════════════════════════════════════════════════════════════════
+  //
+  // Available hook events:
+  //   • PreToolUse      - Before a tool runs (can block with exit 2)
+  //   • PostToolUse     - After a tool completes
+  //   • UserPromptSubmit - When user sends a message
+  //   • Stop            - When Claude finishes responding
+  //   • SessionStart    - When session begins
+  //   • SessionEnd      - When session ends
+  //
+  "hooks": {
+    // Example: Log all Bash commands (uncomment to use)
+    // "PreToolUse": [
+    //   {
+    //     "matcher": "Bash",
+    //     "hooks": [
+    //       {
+    //         "type": "command",
+    //         "command": "echo \"Running: $CLAUDE_TOOL_INPUT\" >> ~/.claude/command.log"
+    //       }
+    //     ]
+    //   }
+    // ]
+  }
+}
