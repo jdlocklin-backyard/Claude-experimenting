@@ -1,0 +1,67 @@
+{
+  // ╔══════════════════════════════════════════════════════════════════════════╗
+  // ║  LOCAL PROJECT SETTINGS - .claude/settings.local.json                    ║
+  // ║  ────────────────────────────────────────────────────────────────────────║
+  // ║  YOUR personal settings for THIS project.                                ║
+  // ║  DO NOT commit this file - add to .gitignore!                            ║
+  // ║                                                                          ║
+  // ║  PRIORITY: Highest in the project                                        ║
+  // ║  This overrides both settings.json and ~/.claude/settings.json           ║
+  // ║                                                                          ║
+  // ║  USE THIS FOR:                                                           ║
+  // ║  • Personal permission overrides                                         ║
+  // ║  • Local development environment tweaks                                  ║
+  // ║  • Debugging hooks you're testing                                        ║
+  // ╚══════════════════════════════════════════════════════════════════════════╝
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PERSONAL PERMISSION OVERRIDES
+  // ═══════════════════════════════════════════════════════════════════════════
+  "permissions": {
+    // Additional commands YOU want to allow (beyond team settings)
+    "allowBash": [
+      // Maybe you use yarn instead of pnpm locally
+      "Bash(yarn *)",
+
+      // Or you run docker commands
+      "Bash(docker compose *)",
+      "Bash(docker ps)",
+
+      // Or you want to allow certain git operations
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LOCAL ENVIRONMENT
+  // ═══════════════════════════════════════════════════════════════════════════
+  "env": {
+    // Your local database URL (different from team default)
+    "DATABASE_URL": "postgresql://localhost:5432/todoapp_dev",
+
+    // Your personal API keys for local development
+    // (These stay on your machine, never committed)
+    "OPENAI_API_KEY": "${OPENAI_API_KEY}"  // References your shell env
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NOTE: You can also override hooks here
+  // ═══════════════════════════════════════════════════════════════════════════
+  //
+  // If the team has a slow hook you want to skip locally:
+  //
+  // "hooks": {
+  //   "PostToolUse": []  // Disable all PostToolUse hooks for you
+  // }
+}
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  GITIGNORE REMINDER                                                      ║
+// ║  ────────────────────────────────────────────────────────────────────────║
+// ║  Add this to your .gitignore:                                            ║
+// ║                                                                          ║
+// ║  # Claude Code local settings (personal, not shared)                     ║
+// ║  .claude/settings.local.json                                             ║
+// ║  .claude/CLAUDE.local.md                                                 ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
